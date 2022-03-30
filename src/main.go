@@ -21,7 +21,7 @@ func main() {
 	cancel()
 
 	//Telegram
-	bot, err := tgbotapi.NewBotAPI("5201221376:AAE6eVSgAIsRbrta-9ujkY347xq33B15-2c")
+	bot, err := tgbotapi.NewBotAPI("")
 	CheckError(err)
 
 	bot.Debug = true
