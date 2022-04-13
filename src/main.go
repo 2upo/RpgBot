@@ -2,29 +2,21 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"telegrambot/utils"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func main() {
+	// Instantiate database
 	db := utils.Db()
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(2)*time.Second)
-	err := db.Client().Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-	cancel()
 
-	//Telegram
+	// Instantiate TGBot instance
 	bot, err := tgbotapi.NewBotAPI("")
-	CheckError(err)
 
-	bot.Debug = true
+	bot.Debug = false
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -32,8 +24,10 @@ func main() {
 	u.Timeout = 60
 
 	updates := bot.GetUpdatesChan(u)
+	// TODO: suda cod pishi
 	var userStatus UserStatuses
 	userStatus.InitMap()
+
 	for update := range updates {
 		userId := update.Message.Chat.ID
 		handlerToProcess := userStatus.GetCurrentUserHandler(userId)
@@ -41,11 +35,5 @@ func main() {
 		userStatus.SetUserStatus(userId, newStatus)
 		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 		fmt.Println(newStatus)
-	}
-}
-
-func CheckError(err error) {
-	if err != nil {
-		panic(err)
 	}
 }

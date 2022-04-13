@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 
@@ -20,16 +19,8 @@ func HandleDefault(bot *tgbotapi.BotAPI, update tgbotapi.Update) Status {
 
 	switch update.Message.Command() {
 	case "help":
-		msg.Text = "I understand: \n/noteList\n/status\n/noteAdd"
-	case "noteList":
-		msg.Text = ReadFileLineByLine("./Notes.txt")
-	case "status":
-		msg.Text = "I'm ok."
-	case "noteAdd":
-		msg.Text = update.Message.From.UserName
-		status = AddingNote
-	default:
-		msg.Text = "I understand: \n/noteList\n/status\n/noteAdd"
+		msg.Text = "Understandable!"
+
 	}
 
 	if _, err := bot.Send(msg); err != nil {
