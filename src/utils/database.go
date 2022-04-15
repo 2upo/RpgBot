@@ -17,14 +17,16 @@ var (
 
 // Db
 func Db() *mongo.Database {
+  conf := Config()
 	once.Do(func() {
 		var err error
-		instance, err = initClient("mongodb://localhost", 10)
+   
+		instance, err = initClient(conf.Dsn, 10)
 		if err != nil {
 			log.Fatal(err)
 		}
 	})
-	return instance.Database("DEV")
+	return instance.Database(conf.DBName)
 }
 
 func initClient(dsn string, timeout int) (*mongo.Client, error) {

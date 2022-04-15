@@ -1,21 +1,23 @@
 package main
 
 import (
-	"context"
 	"log"
 	"telegrambot/utils"
-	"time"
+  "telegrambot/router"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
+  // Instantiate config
+  config := utils.Config()
+  
 	// Instantiate database
 	db := utils.Db()
+  log.Printf("Instantiated db: %v", db.Client)
 
 	// Instantiate TGBot instance
-	bot, err := tgbotapi.NewBotAPI("")
-
+	bot, _ := tgbotapi.NewBotAPI(config.TgBotApiKey)
 	bot.Debug = false
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
@@ -24,16 +26,8 @@ func main() {
 	u.Timeout = 60
 
 	updates := bot.GetUpdatesChan(u)
-	// TODO: suda cod pishi
-	var userStatus UserStatuses
-	userStatus.InitMap()
 
 	for update := range updates {
-		userId := update.Message.Chat.ID
-		handlerToProcess := userStatus.GetCurrentUserHandler(userId)
-		newStatus := handlerToProcess(bot, update)
-		userStatus.SetUserStatus(userId, newStatus)
-		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-		fmt.Println(newStatus)
+		router.ProcessUpdate(bot, update)
 	}
 }

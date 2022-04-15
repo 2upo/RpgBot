@@ -1,4 +1,4 @@
-package main
+package router
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -10,9 +10,6 @@ const (
 	AddingNote
 )
 
-type Router struct{
-	userSteps map[Status]Handler
-}
 
 func InitRouter() Router{
 	router := Router{}
