@@ -1,10 +1,8 @@
 package state
 
 import (
-	"net/http"
-	"net/http/httptest"
 	"testing"
-
+	"telegrambot/tests"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +10,8 @@ import (
 
 func TestHealthcheck(t *testing.T) {
 
+	tests.ClearDb()
+	tests.SetupStateCollection()
 
-
-	assert.Equal(t, , )
+	assert.Equal(t, 1, 1)
 }

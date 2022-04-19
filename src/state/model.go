@@ -2,18 +2,19 @@ package state
 
 import (
   "telegrambot/utils"
+  "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type State struct {
-  Id utils.Status
-  Header string
-  Content string
+  ID        primitive.ObjectID  `json:"_id" bson:"_id"`
+  Header    string
+  Content   string
   CreatedAt int
-  Answers []Answer
+  Answers   []Answer
 }
 
 type Answer struct{
-  Id string
-  NextState utils.Status
-  Content string
+  ID        primitive.ObjectID  `json:"_id" bson:"_id"`
+  NextState primitive.ObjectID  `json:"_id" bson:"_id"`
+  Content   string
 }
