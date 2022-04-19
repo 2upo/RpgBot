@@ -8,7 +8,7 @@ var db = utils.Db()
 
 // Get user state from MongoDB
 func GetUserState(userId string) utils.Status {
-      var result struct {
+    var result struct {
         Value float64
     }
     filter := bson.D{{"name", "pi"}}
@@ -26,5 +26,5 @@ func GetUserState(userId string) utils.Status {
 
 // Set new User Status on DB
 func SetUserState(userId string, newState utils.Status) {
-  
+
 }

@@ -12,6 +12,17 @@ services:
         depends_on:
             - mongodb
 
+    test:
+        build: .
+        command: go test ./...
+        env_file:
+            - .env
+        environment:
+            - MONGO_DSN="mongodb://Buba:boba22@mongodb"
+            - MONGO_DB="RPG_BOT_TEST"
+        depends_on:
+            - mongodb
+
     mongodb:
         image: mongo:5.0
         environment:

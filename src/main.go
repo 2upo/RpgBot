@@ -11,10 +11,11 @@ import (
 func main() {
   // Instantiate config
   config := utils.Config()
-  
+
 	// Instantiate database
 	db := utils.Db()
-  log.Printf("Instantiated db: %v", db.Client)
+	defer utils.CloseClient(10)
+    log.Printf("Instantiated db: %v", db.Client)
 
 	// Instantiate TGBot instance
 	bot, _ := tgbotapi.NewBotAPI(config.TgBotApiKey)
@@ -28,6 +29,6 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		router.ProcessUpdate(bot, update)
+		// TODO: logic here
 	}
 }

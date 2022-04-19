@@ -7,8 +7,8 @@ import (
 type State struct {
   Id utils.Status
   Header string
-  Image string
   Content string
+  CreatedAt int
   Answers []Answer
 }
 
