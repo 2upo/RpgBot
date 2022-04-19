@@ -5,8 +5,8 @@ services:
         env_file:
           - .env
         environment:
-            - MONGO_DSN="mongodb://Buba:boba22@mongodb"
-            - MONGO_DB="RPG_BOT"
+            - MONGO_DSN=mongodb://Buba:boba22@mongodb
+            - MONGO_DB=RPG_BOT
         ports:
             - 5000:5000
         depends_on:
@@ -18,8 +18,8 @@ services:
         env_file:
             - .env
         environment:
-            - MONGO_DSN="mongodb://Buba:boba22@mongodb"
-            - MONGO_DB="RPG_BOT_TEST"
+            - MONGO_DSN=mongodb://Buba:boba22@mongodb
+            - MONGO_DB=RPG_BOT_TEST
         depends_on:
             - mongodb
 

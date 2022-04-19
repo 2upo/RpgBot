@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"telegrambot/utils"
-  "telegrambot/router"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -15,7 +14,7 @@ func main() {
 	// Instantiate database
 	db := utils.Db()
 	defer utils.CloseClient(10)
-    log.Printf("Instantiated db: %v", db.Client)
+    log.Printf("Instantiated db: %v", db.Client())
 
 	// Instantiate TGBot instance
 	bot, _ := tgbotapi.NewBotAPI(config.TgBotApiKey)
@@ -29,6 +28,6 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		// TODO: logic here
+		log.Printf(update.Message.Text)
 	}
 }

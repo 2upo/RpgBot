@@ -4,17 +4,19 @@ import (
     "log"
     "context"
     "telegrambot/utils"
+    "time"
     "go.mongodb.org/mongo-driver/mongo/options"
+    "go.mongodb.org/mongo-driver/bson"
 )
 
-db = Db()
+var db = utils.Db()
 
 // Get all states from database
-func GetAll() []State {
-  collection = db.Collection("state")
-  states := make([]State)
+func GetAll() ([]State, error) {
+  collection := db.Collection("state")
+  var states []State
 
-  ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
+  ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
   defer cancel()
 
   // defining select options
@@ -26,7 +28,7 @@ func GetAll() []State {
   // options.SetLimit(10)
   // options.SetSkip(10)
 
-  cursor, err := collection.Find(ctx, bson.D{}})
+  cursor, err := collection.Find(ctx, bson.D{})
   if err != nil {
       log.Fatal(err)
       return nil, err
@@ -49,7 +51,7 @@ func GetAll() []State {
       log.Fatal(err)
       return nil, err
   }
-  return result, nil
+  return states, nil
 }
 //
 // func Insert(new_state State) State {
@@ -66,3 +68,4 @@ func GetAll() []State {
 // func Update(updated_state State) State {
 //
 // }
+//

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -21,6 +20,7 @@ func Db() *mongo.Database {
   conf := Config()
 	once.Do(func() {
 		var err error
+		log.Println(conf.Dsn)
 
 		instance, err = initClient(conf.Dsn, 10)
 		if err != nil {

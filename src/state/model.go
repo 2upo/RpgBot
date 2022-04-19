@@ -1,7 +1,6 @@
 package state
 
 import (
-  "telegrambot/utils"
   "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
