@@ -6,6 +6,7 @@ import (
     "log"
 
     "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/mongo"
 
     "telegrambot/utils"
 )
@@ -17,7 +18,7 @@ import (
 
 var db = utils.Db()
 
-func ClearDb(){
+func ClearDb() {
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
@@ -26,27 +27,15 @@ func ClearDb(){
         log.Fatal(err)
     }
 }
-// type State struct {
-//   ID        primitive.ObjectID  `json:"_id" bson:"_id"`
-//   Header    string
-//   Content   string
-//   CreatedAt int
-//   Answers   []Answer
-// }
-//
-// type Answer struct{
-//   ID        primitive.ObjectID  `json:"_id" bson:"_id"`
-//   NextState primitive.ObjectID  `json:"_id" bson:"_id"`
-//   Content   string
-// }
 
-func SetupStateCollection(){
+func newState(header string) (*mongo.InsertOneResult, error) {
     collection := db.Collection("state")
 
     ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
     defer cancel()
+
     res, err := collection.InsertOne(ctx, bson.D{
-        {"Header", "Sample1"},
+        {"Header", header},
         {"Content", "Sample content"},
         {"CreatedAt", int(time.Now().Unix())},
         {"Answers", []bson.D{
@@ -60,10 +49,29 @@ func SetupStateCollection(){
             },
         }},
     })
-    id := res.InsertedID
-    log.Println(id)
+    return res, err
+}
 
+func SetupStateCollection() []*mongo.InsertOneResult {
+
+    state1, err := newState("state1")
     if err != nil {
         log.Fatal(err)
     }
+
+    state2, err := newState("state2")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    state3, err := newState("state3")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    log.Println(state3.InsertedID)
+
+    // Example how to obtain state id:
+    // id := res.InsertedID
+    return []*mongo.InsertOneResult{state1, state2, state3}
 }

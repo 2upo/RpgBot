@@ -13,7 +13,6 @@ type State struct {
 }
 
 type Answer struct{
-  ID        primitive.ObjectID  `json:"_id" bson:"_id"`
   NextState primitive.ObjectID  `json:"_id" bson:"_id"`
   Content   string
 }
