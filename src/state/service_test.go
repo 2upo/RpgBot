@@ -6,12 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestGetAll(t *testing.T) {
+	ass := assert.New(t)
 
+	tests.SetupStateCollection() // Set up
 
-func TestHealthcheck(t *testing.T) {
+	states, err := GetAll()
+	if err != nil {
+		ass.Nil(err)
+	}
 
-	tests.ClearDb()
-	tests.SetupStateCollection()
+	ass.Equal(len(states), 3)
 
-	assert.Equal(t, 1, 1)
+	// Checking state content:
+	ass.Equal(states[0].Content, "Sample content")
+	ass.NotNil(states[0].Answers[0].NextState)
+	ass.Equal(states[0].Answers[0].Content, "sample content")
+	ass.NotNil(states[0].ID)
+
+	tests.ClearDb() // Tear down
 }
