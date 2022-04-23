@@ -1,8 +1,9 @@
 package state
 
 import (
-	"testing"
 	"telegrambot/tests"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -37,6 +38,26 @@ func TestGetById(t *testing.T) {
 
 	ass.Nil(err)
 	ass.Equal(state.Header, "state1")
+
+	tests.ClearDb() // Tear down
+}
+
+func TestInsert(t *testing.T) {
+	ass := assert.New(t)
+
+	new_state := State{
+		Header:  "state1",
+		Content: "sample content",
+	}
+
+	err := Insert(&new_state)
+	ass.Nil(err)
+
+	state, err := GetById(new_state.ID)
+
+	ass.Nil(err)
+	ass.Equal(state.Header, new_state.Header)
+	ass.Equal(state.Content, new_state.Content)
 
 	tests.ClearDb() // Tear down
 }
