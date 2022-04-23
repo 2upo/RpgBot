@@ -6,9 +6,11 @@ import (
 	"telegrambot/utils"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
+    "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/bson/primitive"
+
+	"go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var collection = utils.Db().Collection("state")
@@ -74,20 +76,14 @@ func GetById(id primitive.ObjectID) (*State, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// defining select options
-	options := options.FindOne()
-	options.SetSort(bson.D{{"CreatedAt", -1}})
-
-	// find all
-	// TODO: add pagination
-	// options.SetLimit(10)
-	// options.SetSkip(10)
-
-	err := collection.FindOne(ctx, bson.M{"_id": id}, options).Decode(&state)
-	if err != nil {
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&state)
+    if err == mongo.ErrNoDocuments {
+        return nil, err
+    } else if err != nil {
 		log.Fatal(err)
 		return nil, err
 	}
+    
 	return &state, nil
 }
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func TestGetAll(t *testing.T) {
@@ -29,6 +30,20 @@ func TestGetAll(t *testing.T) {
 	tests.ClearDb() // Tear down
 }
 
+// Test GetAll against empty Collection
+func TestGetAllEmpty(t *testing.T) {
+	ass := assert.New(t)
+
+	states, err := GetAll()
+	if err != nil {
+		ass.Nil(err)
+	}
+
+	ass.Equal(len(states), 0)
+
+	tests.ClearDb() // Tear down
+}
+
 func TestGetById(t *testing.T) {
 	ass := assert.New(t)
 
@@ -38,6 +53,18 @@ func TestGetById(t *testing.T) {
 
 	ass.Nil(err)
 	ass.Equal(state.Header, "state1")
+
+	tests.ClearDb() // Tear down
+}
+
+// Test GetById against unexisting id
+func TestGetByEmptyId(t *testing.T) {
+	ass := assert.New(t)
+
+	state, err := GetById(primitive.NewObjectID())
+
+	ass.Equal(err, mongo.ErrNoDocuments)
+	ass.Nil(state)
 
 	tests.ClearDb() // Tear down
 }
