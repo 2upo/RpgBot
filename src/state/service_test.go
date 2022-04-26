@@ -1,10 +1,13 @@
 package state
 
 import (
+	"context"
 	"telegrambot/tests"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -61,10 +64,9 @@ func TestGetById(t *testing.T) {
 func TestGetByEmptyId(t *testing.T) {
 	ass := assert.New(t)
 
-	state, err := GetById(primitive.NewObjectID())
+	_, err := GetById(primitive.NewObjectID())
 
 	ass.Equal(err, mongo.ErrNoDocuments)
-	ass.Nil(state)
 
 	tests.ClearDb() // Tear down
 }
@@ -80,11 +82,42 @@ func TestInsert(t *testing.T) {
 	err := Insert(&new_state)
 	ass.Nil(err)
 
-	state, err := GetById(new_state.ID)
+	state, err := mockGetById(new_state.ID)
 
 	ass.Nil(err)
 	ass.Equal(state.Header, new_state.Header)
 	ass.Equal(state.Content, new_state.Content)
 
-	tests.ClearDb() // Tear down
+	tests.ClearDb()
+}
+
+func TestUpdate(t *testing.T) {
+	ass := assert.New(t)
+
+	states := tests.SetupStateCollection()
+
+	state, err := mockGetById(states[0].InsertedID.(primitive.ObjectID))
+	ass.Nil(err)
+
+	state.Content = "new content"
+
+	err = Update(state)
+	ass.Nil(err)
+
+	updatedState, err := mockGetById(states[0].InsertedID.(primitive.ObjectID))
+	ass.Nil(err)
+	ass.Equal(updatedState.Content, state.Content)
+
+	tests.ClearDb()
+}
+
+func mockGetById(id primitive.ObjectID) (*State, error) {
+	var state State
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&state)
+
+	return &state, err
 }
