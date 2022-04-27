@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -45,6 +46,17 @@ func newState(header string, stateCollection *mongo.Collection) (*mongo.InsertOn
 				{"Content", "sample content"},
 			},
 		}},
+	})
+	return res, err
+}
+
+func NewUser(chatId string, userCollection *mongo.Collection) (*mongo.InsertOneResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := userCollection.InsertOne(ctx, bson.D{
+		{"ChatId", chatId},
+		{"CurrentState", primitive.NewObjectID()},
 	})
 	return res, err
 }
