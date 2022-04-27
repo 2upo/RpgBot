@@ -2,12 +2,10 @@ package user
 
 import (
 	"context"
-	"log"
 	"telegrambot/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -29,11 +27,7 @@ func Upsert(user *User) error {
 	defer cancel()
 
 	opts := options.Replace().SetUpsert(true)
-	res, err := collection.ReplaceOne(ctx, bson.D{{"ChatId", user.ChatId}}, user, opts)
-	if err == nil && res.UpsertedCount == 1 {
-		user.ID = res.UpsertedID.(primitive.ObjectID)
-	}
-	log.Println(res.UpsertedCount)
+	_, err := collection.ReplaceOne(ctx, bson.D{{"ChatId", user.ChatId}}, user, opts)
 
 	return err
 }

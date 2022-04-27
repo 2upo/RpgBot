@@ -36,10 +36,7 @@ func TestUpsert(t *testing.T) {
 	ass.Nil(err)
 
 	var createdUser User
-	state, err := GetByChatId(chatId)
-	ass.Nil(err)
-	ass.Equal(state.ChatId, chatId)
-	err = collection.FindOne(context.Background(), bson.D{{"ChatId", chatId}}).Decode(&createdUser)
+	err = collection.FindOne(context.Background(), bson.D{{"chatid", chatId}}).Decode(&createdUser)
 	ass.Nil(err)
 	ass.Equal(createdUser.ChatId, user.ChatId)
 	ass.Equal(createdUser.CurrentState, user.CurrentState)

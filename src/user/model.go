@@ -5,7 +5,6 @@ import (
 )
 
 type User struct {
-	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	ChatId       string
 	CurrentState primitive.ObjectID
 }
