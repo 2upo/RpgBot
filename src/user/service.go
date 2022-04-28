@@ -6,28 +6,38 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var collection = utils.Db().Collection("user")
+type UserService struct {
+	Collection *mongo.Collection
+}
 
-func GetByChatId(chatId string) (*User, error) {
+func InitUserService() *UserService {
+	var userService UserService
+	userService.Collection = utils.Db().Collection("user")
+
+	return &userService
+}
+
+func (service *UserService) GetByChatId(chatId string) (*User, error) {
 	var state User
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := collection.FindOne(ctx, bson.M{"chatid": chatId}).Decode(&state)
+	err := service.Collection.FindOne(ctx, bson.M{"chatid": chatId}).Decode(&state)
 
 	return &state, err
 }
 
-func Upsert(user *User) error {
+func (service *UserService) Upsert(user *User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	opts := options.Replace().SetUpsert(true)
-	_, err := collection.ReplaceOne(ctx, bson.D{{"chatid", user.ChatId}}, user, opts)
+	_, err := service.Collection.ReplaceOne(ctx, bson.D{{"chatid", user.ChatId}}, user, opts)
 
 	return err
 }

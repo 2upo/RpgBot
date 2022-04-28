@@ -7,17 +7,17 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type StateService struct{
+type StateService struct {
 	Collection *mongo.Collection
 }
 
 // Constructor
-func InitStateService() *StateService{
+func InitStateService() *StateService {
 	var stateService StateService
 	stateService.Collection = utils.Db().Collection("state")
 
@@ -25,7 +25,7 @@ func InitStateService() *StateService{
 }
 
 // Get all states from database
-func (this *StateService)GetAll() ([]State, error) {
+func (service *StateService) GetAll() ([]State, error) {
 	var states []State
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -40,7 +40,7 @@ func (this *StateService)GetAll() ([]State, error) {
 	// options.SetLimit(10)
 	// options.SetSkip(10)
 
-	cursor, err := this.Collection.Find(ctx, bson.D{}, options)
+	cursor, err := service.Collection.Find(ctx, bson.D{}, options)
 	if err != nil {
 		return nil, err
 	}
@@ -63,42 +63,42 @@ func (this *StateService)GetAll() ([]State, error) {
 	return states, nil
 }
 
-func (this *StateService)Insert(new_state *State) error {
+func (service *StateService) Insert(new_state *State) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	res, err := this.Collection.InsertOne(ctx, new_state)
+	res, err := service.Collection.InsertOne(ctx, new_state)
 	if err == nil {
 		new_state.ID = res.InsertedID.(primitive.ObjectID)
 	}
 	return err
 }
 
-func (this *StateService)GetById(id primitive.ObjectID) (*State, error) {
+func (service *StateService) GetById(id primitive.ObjectID) (*State, error) {
 	var state State
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := this.Collection.FindOne(ctx, bson.M{"_id": id}).Decode(&state)
+	err := service.Collection.FindOne(ctx, bson.M{"_id": id}).Decode(&state)
 
 	return &state, err
 }
 
-func (this *StateService)Update(updated_state *State) error {
+func (service *StateService) Update(updated_state *State) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	_, err := this.Collection.ReplaceOne(ctx, bson.M{"_id": updated_state.ID}, updated_state)
+	_, err := service.Collection.ReplaceOne(ctx, bson.M{"_id": updated_state.ID}, updated_state)
 
 	return err
 }
 
-func (this *StateService)DeleteById(id primitive.ObjectID) error {
+func (service *StateService) DeleteById(id primitive.ObjectID) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	_, err := this.Collection.DeleteOne(ctx, bson.M{"_id": id})
+	_, err := service.Collection.DeleteOne(ctx, bson.M{"_id": id})
 
 	return err
 }

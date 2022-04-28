@@ -11,18 +11,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var userService = InitUserService()
+
 func TestGetByChatId(t *testing.T) {
 	ass := assert.New(t)
 	chatId := "aboba"
-	_, err := tests.NewUser(chatId, collection)
+	_, err := tests.NewUser(chatId, userService.Collection)
 	ass.Nil(err)
 
-	state, err := GetByChatId(chatId)
+	state, err := userService.GetByChatId(chatId)
 
 	ass.Nil(err)
 	ass.Equal(state.ChatId, chatId)
 
-	tests.ClearDb([]*mongo.Collection{collection}) // Tear down
+	tests.ClearDb([]*mongo.Collection{userService.Collection}) // Tear down
 }
 
 func TestUpsert(t *testing.T) {
@@ -32,11 +34,11 @@ func TestUpsert(t *testing.T) {
 		ChatId:       chatId,
 		CurrentState: primitive.NewObjectID(),
 	}
-	err := Upsert(&user)
+	err := userService.Upsert(&user)
 	ass.Nil(err)
 
 	var createdUser User
-	err = collection.FindOne(context.Background(), bson.D{{"chatid", chatId}}).Decode(&createdUser)
+	err = userService.Collection.FindOne(context.Background(), bson.D{{"chatid", chatId}}).Decode(&createdUser)
 	ass.Nil(err)
 	ass.Equal(createdUser.ChatId, user.ChatId)
 	ass.Equal(createdUser.CurrentState, user.CurrentState)
