@@ -33,17 +33,17 @@ func newState(header string, stateCollection *mongo.Collection) (*mongo.InsertOn
 	defer cancel()
 
 	res, err := stateCollection.InsertOne(ctx, bson.D{
-		{"Header", header},
-		{"Content", "Sample content"},
-		{"CreatedAt", int(time.Now().Unix())},
-		{"Answers", []bson.D{
+		{"header", header},
+		{"content", "Sample content"},
+		{"createdat", int(time.Now().Unix())},
+		{"answers", []bson.D{
 			bson.D{
-				{"NextState", "default"},
-				{"Content", "sample content"},
+				{"nextstate", "default"},
+				{"content", "sample content"},
 			},
 			bson.D{
-				{"NextState", "default"},
-				{"Content", "sample content"},
+				{"nextState", "default"},
+				{"content", "sample content"},
 			},
 		}},
 	})
@@ -55,8 +55,8 @@ func NewUser(chatId string, userCollection *mongo.Collection) (*mongo.InsertOneR
 	defer cancel()
 
 	res, err := userCollection.InsertOne(ctx, bson.D{
-		{"ChatId", chatId},
-		{"CurrentState", primitive.NewObjectID()},
+		{"chatid", chatId},
+		{"currentstate", primitive.NewObjectID()},
 	})
 	return res, err
 }

@@ -17,7 +17,7 @@ func GetByChatId(chatId string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := collection.FindOne(ctx, bson.M{"ChatId": chatId}).Decode(&state)
+	err := collection.FindOne(ctx, bson.M{"chatid": chatId}).Decode(&state)
 
 	return &state, err
 }
@@ -27,7 +27,7 @@ func Upsert(user *User) error {
 	defer cancel()
 
 	opts := options.Replace().SetUpsert(true)
-	_, err := collection.ReplaceOne(ctx, bson.D{{"ChatId", user.ChatId}}, user, opts)
+	_, err := collection.ReplaceOne(ctx, bson.D{{"chatid", user.ChatId}}, user, opts)
 
 	return err
 }
