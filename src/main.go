@@ -2,32 +2,20 @@ package main
 
 import (
 	"log"
+	"sync"
 	"telegrambot/utils"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func main() {
-  // Instantiate config
-  config := utils.Config()
+var waitGroup sync.WaitGroup
 
+func main() {
 	// Instantiate database
 	db := utils.Db()
 	defer utils.CloseClient(10)
-    log.Printf("Instantiated db: %v", db.Client())
+	log.Printf("Instantiated db: %v", db.Client())
 
-	// Instantiate TGBot instance
-	bot, _ := tgbotapi.NewBotAPI(config.TgBotApiKey)
-	bot.Debug = false
-
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		log.Printf(update.Message.Text)
-	}
+	// Running Gin Server and Telegram bot API polling
+	waitGroup.Add(2)
+	RunServer(&waitGroup)
+	RunBotListen(&waitGroup)
 }
