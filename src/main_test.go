@@ -1,7 +1,6 @@
 package main
 
 import (
-    "telegrambot/config"
 	router "telegrambot/router"
 	"net/http"
 	"net/http/httptest"
