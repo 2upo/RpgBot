@@ -67,6 +67,9 @@ func (service *StateService) Insert(new_state *State) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
+	// Define created at timestamp:
+	new_state.CreatedAt = int(time.Now().Unix())
+
 	res, err := service.Collection.InsertOne(ctx, new_state)
 	if err == nil {
 		new_state.ID = res.InsertedID.(primitive.ObjectID)
