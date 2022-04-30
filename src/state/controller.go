@@ -5,7 +5,7 @@ import (
 )
 
 type StateController struct {
-    Service *StateService
+    Service *IStateService
 }
 
 // Constructor

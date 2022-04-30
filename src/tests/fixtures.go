@@ -5,10 +5,13 @@ import (
 	"log"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
 
 // https://pkg.go.dev/go.mongodb.org/mongo-driver@v1.9.0/mongo
 
@@ -83,4 +86,12 @@ func SetupStateCollection(stateCollection *mongo.Collection) []*mongo.InsertOneR
 	// Example how to obtain state id:
 	// id := res.InsertedID
 	return []*mongo.InsertOneResult{state1, state2, state3}
+}
+
+func InitApp() *gin.Engine {
+	// Gin Init
+	app := gin.New()
+	app.Use(gin.Recovery())
+
+	return app
 }
